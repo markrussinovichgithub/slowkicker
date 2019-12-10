@@ -55,10 +55,11 @@ const char*       LOG_FILE      = "/glftpd/ftp-data/logs/slowkicker.log";
 const char*       LOCK_FILE     = "/glftpd/tmp/slowkicker.lock";
 const key_t       IPC_KEY       = 0xDEADBABE;
 bool              ONCE_ONLY     = true;
+bool              LOG_IPADDR    = false;  // set to true if you want to log ipaddresses
 Directory         DIRECTORIES[] = {
-    { "/site/iso/*",        125,    /* kB/s */    10,    /* seconds */  3 },
-    { "/site/mp3/*",        125,    /* kB/s */    10,    /* seconds */  3 },
-    { "/site/0day/*",       125,    /* kB/s */    10,    /* seconds */  3 }
+/*    Path                  KB/s    Secs   Max Kicks   */
+    { "/site/debian/*",     2048,   5,     1024 },
+    { "/site/redhat/*",     2048,   5,     1024 },
 };
 
 struct KickInfo
@@ -141,7 +142,12 @@ std::string lookupSourceAddress(int32_t procid)
     }
 
     std::fclose(f);
-    return sourceAddress;
+    if (LOG_IPADDR == true) {
+      return sourceAddress;
+    }
+    else {
+      return "ipaddress_masked";
+    }
 }
 
 History* getHistory(const std::string& username, const std::string& path)
