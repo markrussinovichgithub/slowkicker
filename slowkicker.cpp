@@ -327,7 +327,10 @@ std::string buildPath(const ONLINE& online)
     std::string path(online.currentdir);
     if (S_ISDIR(st.st_mode)) {
         const char* filename = online.status + 5;
-        if (filename == '\0') {
+//        if (filename == '\0') {
+// current g++ versions complain about this "error: ISO C++ forbids comparison between pointer and integer [-fpermissive]"
+// next line should fix that
+        if (strlen(filename) == 0) {
             log("Malformed status: %s", online.status);
             return "";
         }
